@@ -58,6 +58,7 @@ export const WorkspaceSwitcher = () => {
                     <div className="size-9 relative overflow-hidden bg-[#F2F2F2] text-slate-800 font-semibold text-lg rounded-md flex items-center justify-center mr-2">
                         <Plus />
                     </div>
+                    <span className='font-light ml-1 justify-center items-center'>New Workspace</span>
                 </DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>

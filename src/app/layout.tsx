@@ -5,6 +5,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 import { Modals } from "@/components/modals";
+import { JotaiProvider } from "@/components/jotai-provider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,15 +21,17 @@ export default function RootLayout({
 }>) {
   return (
     <ConvexAuthNextjsServerProvider>
-    <html lang="en">
-      <body className={inter.className}>
-        <ConvexClientProvider>
-          <Toaster />
-          <Modals />
-          {children}
-        </ConvexClientProvider>
-      </body>
-    </html>
+      <html lang="en">
+        <body className={inter.className}>
+          <ConvexClientProvider>
+            <JotaiProvider>
+              <Toaster />
+              <Modals />
+              {children}
+            </JotaiProvider>
+          </ConvexClientProvider>
+        </body>
+      </html>
     </ConvexAuthNextjsServerProvider>
   );
 }
