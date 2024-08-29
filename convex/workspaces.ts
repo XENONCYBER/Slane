@@ -119,11 +119,13 @@ export const remove = mutation({
         }
 
         const [members] = await Promise.all([
-            ctx.db.query("members").withIndex("by_workspace_id", (q) => q.eq("workspaceId", args.id)).collect(),
-            ctx.db.delete(args.id),
+            ctx.db
+                .query("members")
+                .withIndex("by_workspace_id", (q) => q.eq("workspaceId", args.id))
+                .collect(),
         ]);
 
-        for (const member of members) {
+        for (const member of members){
             await ctx.db.delete(member._id);
         }
 

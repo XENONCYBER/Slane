@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 import { useUpdateWorkspace } from "@/features/workspaces/api/use-update-workspace";
-import { useRemoveeWorkspace } from "@/features/workspaces/api/use-remove-workspace ";
+import { useRemoveWorkspace } from "@/features/workspaces/api/use-remove-workspace ";
 
 import {
     Dialog,
@@ -15,6 +15,7 @@ import {
 import { TrashIcon } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { useConfirm } from "@/hooks/use-confirmed";
 import { useWorkspaceId } from "@/hooks/use-workspace-id";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
@@ -30,14 +31,15 @@ export const PreferencesModal = ({
     setOpen,
     initialValue
 } : PreferencesModalProps ) => {
-    const workspaceId = useWorkspaceId();
     const router= useRouter();
+    const workspaceId = useWorkspaceId();
+    const [ConfirmDialog, confirm] = useConfirm("Delete Workspace", "Are you sure you want to delete this workspace?");
 
     const [value, setValue] = useState(initialValue);
     const [editOpen, setEditOpen] = useState(false);
 
     const { mutate: updateWorkspace, isPending: isUpdatingWorkspace } = useUpdateWorkspace();
-    const { mutate: removeWorkspace, isPending: isremovingWorkspace } = useRemoveeWorkspace();
+    const { mutate: removeWorkspace, isPending: isremovingWorkspace } = useRemoveWorkspace();
 
     const handleEdit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -54,10 +56,12 @@ export const PreferencesModal = ({
     };
 
     const handleRemove = async() => {
+        const ok = await confirm();
+        if (!ok) return;
         removeWorkspace({ id: workspaceId }, {
             onSuccess: () => {
                 toast.success("Workspace removed successfully");
-                router.replace("/workspaces");
+                router.replace("/");
             },
             onError: (error) => {
                 toast.error("Failed to remove workspace");
@@ -65,6 +69,8 @@ export const PreferencesModal = ({
         })};
 
     return (
+        <>
+        <ConfirmDialog />
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogContent className="p-0 bg-gray-50 overflow-hidden">
                 <DialogHeader className="p-4 border-b bg-white">
@@ -130,5 +136,6 @@ export const PreferencesModal = ({
                 </div>
             </DialogContent>
         </Dialog>
+        </>
     );
 };
