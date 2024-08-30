@@ -11,7 +11,7 @@ interface WorkspaceSectionProps {
     label: string;
     children: React.ReactNode;
     hint: string | undefined; // Add a union type with 'undefined'
-    onNew: () => void;
+    onNew: () => void | undefined; // Add a union type with 'undefined'
 };
 
 export const WorkspaceSection = ({

@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/tooltip";
 
 interface HintProps {
-    label: string;
+    label: any ;
     children: React.ReactNode;
     side?: "top" | "bottom" | "left" | "right";
     align?: "start" | "center" | "end";
