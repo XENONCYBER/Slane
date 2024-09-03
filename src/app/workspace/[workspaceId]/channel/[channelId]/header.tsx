@@ -18,6 +18,7 @@ import { toast } from "sonner";
 import { useConfirm } from "@/hooks/use-confirmed";
 import { useRouter } from "next/navigation";
 import { useWorkspaceId } from "@/hooks/use-workspace-id";
+import { useRemoveChannel } from "@/features/channels/api/use-remove-channel";
 
 interface HeaderProps {
     title: string;
@@ -33,14 +34,13 @@ export const Header = ({ title }: HeaderProps) => {
     const [ConfirmDialog, confirm] = useConfirm("Delete this Channel","Are you sure you want to delete this channel?");
 
     const { mutate: updateChannel, isPending: updatingChannel } = useUpdateChannel();
-    const { mutate: removeChannel, isPending: removingChannel } = useUpdateChannel();
+    const { mutate: removeChannel, isPending: removingChannel } = useRemoveChannel();
 
-    const handleDelete = async() => {
+    const handleRemove = async() => {
         const ok = await confirm();
         if (!ok) return;
         removeChannel({
             id: channelId,
-            name: value
         }, {
             onSuccess() {
                 toast.success("Channel deleted successfully");
@@ -125,7 +125,7 @@ export const Header = ({ title }: HeaderProps) => {
                                 </form>
                             </DialogContent>
                         </Dialog>
-                        <button onClick={handleDelete} disabled={removingChannel}
+                        <button onClick={handleRemove} disabled={removingChannel}
                             className="flex items-center gap-x-2 px-5 py-4 bg-white rounded-lg cursor-pointer border hover:bg-gray-50 text-rose-600">
                             <TrashIcon className="size-4 text-red-500" />
                             <p className="text-sm font-semibold">Delete Channel</p>
