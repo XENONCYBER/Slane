@@ -91,7 +91,7 @@ export const remove = mutation({
         }
 
         const channel = await ctx.db.get(args.id);
-
+        
         if (!channel) {
             throw new Error("Channel not found");
         }

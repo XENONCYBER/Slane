@@ -1,14 +1,46 @@
 import Quill, { QuillOptions } from 'quill';
 import { PiTextAa } from 'react-icons/pi';
 import "quill/dist/quill.snow.css";
-import { useEffect, useRef } from 'react';
+import { MutableRefObject, useEffect, useLayoutEffect, useRef } from 'react';
 import { Button } from './ui/button';
 import { ImageIcon, Smile } from 'lucide-react';
 import { MdSend } from 'react-icons/md';
 import { Hint } from './hint';
+import { Delta, Op } from 'quill/core';
 
-const Editor = () => {
+type EditorValue = {
+    image: File | null;
+    body: string;
+};
+
+interface editorProps {
+    onSubmit: ({ image, body }: EditorValue) => void;
+    onCancel?: () => void;
+    placeholder?: string;
+    disabled?: boolean;
+    defaultValue?: Delta | Op[];
+    innerRef?: MutableRefObject<Quill | null>;
+    variant?: 'create' | 'update';
+};
+
+const Editor = ({
+    onSubmit, onCancel, placeholder="Write something", defaultValue=[], innerRef, variant = 'create', disabled = false
+}: editorProps) => {
     const continerRef = useRef<HTMLDivElement>(null);
+
+    const submitRef= useRef(onSubmit);
+    const placeholderRef= useRef(placeholder);
+    const defaultValueRef= useRef(defaultValue);
+    const quillRef = useRef<Quill | null>(null);
+    const disabledRef= useRef(disabled);
+    // const innerRef= useRef(innerRef);
+
+    useLayoutEffect(() => {
+        submitRef.current = onSubmit;
+        placeholderRef.current = placeholder;
+        defaultValueRef.current = defaultValue;
+        disabledRef.current = disabled;
+    });
 
     useEffect(() => {
         if (!continerRef.current) return;
@@ -17,9 +49,17 @@ const Editor = () => {
         const editorContainer = container.appendChild(container.ownerDocument.createElement('div'));
 
         const options : QuillOptions = {
-            theme: 'snow'
+            theme: 'snow',
+            placeholder: placeholderRef.current,
+
         };
         const quill = new Quill(editorContainer, options);
+        quillRef.current = quill;
+        quillRef.current.focus();
+
+        // if {innerRef} {
+        //     innerRef.current = quill;
+        // };
 
         return () => {
             if (container){
