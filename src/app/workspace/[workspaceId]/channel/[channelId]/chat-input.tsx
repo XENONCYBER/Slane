@@ -19,6 +19,7 @@ type CreateMessageValues = {
     workspaceId: Id<"workspaces">;
     body: string;
     image?: Id<"_storage"> | undefined;
+    doc?: Id<"_storage"> | undefined;
 };
 
 export const ChatInput = ({ placeholder }: ChatInputProps) => {
@@ -36,10 +37,12 @@ export const ChatInput = ({ placeholder }: ChatInputProps) => {
 
     const handleSubmit = async ({
         body,
-        image
+        image,
+        doc,
     }: {
         body: string;
         image: File | null;
+        doc: File | null;
     }) => {
         try {
             setIsPending(true);
@@ -50,6 +53,7 @@ export const ChatInput = ({ placeholder }: ChatInputProps) => {
                 workspaceId,
                 channelId,
                 image: undefined,
+                doc: undefined,
             };
 
             if (image) {
@@ -72,6 +76,27 @@ export const ChatInput = ({ placeholder }: ChatInputProps) => {
 
                 values.image = storageId;
             }
+            if (doc) {
+                const url = await generateUploadURL({}, { throwError: true });
+
+                if (!url) {
+                    throw new Error("Failed to generate upload URL");
+                }
+
+                const result = await fetch(url, {
+                    method: "POST",
+                    headers: { "Content-Type": doc?.type || "application/octet-stream" },
+                    body: doc,
+                });
+
+                if(!result.ok) {
+                    throw new Error("Failed to upload image"); 
+                };
+                const { docStorageId } = await result.json();
+
+                values.image = docStorageId;
+            }
+
 
             await createMessage(values, { throwError: true });
 
