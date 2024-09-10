@@ -3,7 +3,7 @@ import { PiTextAa } from 'react-icons/pi';
 import "quill/dist/quill.snow.css";
 import { MutableRefObject, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { Button } from './ui/button';
-import { ImageIcon, Smile, XIcon } from 'lucide-react';
+import { FileIcon, ImageIcon, Smile, XIcon } from 'lucide-react';
 import { MdSend } from 'react-icons/md';
 import { Hint } from './hint';
 import { Delta, Op } from 'quill/core';
@@ -31,6 +31,7 @@ const Editor = ({
 }: editorProps) => {
     const [text, setText] = useState("");
     const [image, setImage] = useState<File | null>(null);
+    const [doc, setDoc] = useState<File | null>(null);
     const [isToolbarVisible, setIsToolbarVisible] = useState(true);
 
     const containerRef = useRef<HTMLDivElement>(null);
@@ -193,6 +194,17 @@ const Editor = ({
                                 onClick={() => imageElementRef.current?.click()}
                             >
                                 <ImageIcon className='size-4' />
+                            </Button></Hint>
+                    )}
+                    {variant === "create" && (
+                        <Hint label="Add Document">
+                            <Button
+                                disabled={disabled}
+                                size="iconSm"
+                                variant="ghost"
+                                onClick={() => imageElementRef.current?.click()}
+                            >
+                                <FileIcon className='size-4' />
                             </Button></Hint>
                     )}
                     {variant === "update" && (
