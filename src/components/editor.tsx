@@ -66,7 +66,8 @@ const Editor = ({
                 toolbar: [
                     ["bold", "italic", "underline", "strike"],
                     ["link"],
-                    [{ list: "ordered" }, { list: "bullet" }]
+                    [{ list: "ordered" }, { list: "bullet" }],
+                    ["blockquote", "code-block"],
                 ],
                 keyboard: {
                     bindings: {
